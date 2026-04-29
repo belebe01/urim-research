@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Build the Research System — URIM</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500&display=swap');
+
+:root {
+  --white:         #ffffff;
+  --off-white:     #faf8f5;
+  --linen:         #f4ede0;
+  --bourbon:       #b5601e;
+  --bourbon-deep:  #8c4515;
+  --bourbon-pale:  #e8c49a;
+  --leather:       #2a1a0e;
+  --leather-soft:  #5c3820;
+  --smoke:         #9e8878;
+  --smoke-light:   #c4b4a4;
+  --rule:          #e8ddd2;
+  --code-bg:       #f7f2ec;
+  --code-border:   #e0d0c0;
+  --p1:            #2a4a6b;
+  --p1-light:      #e8f0f8;
+  --p1-border:     #b8cfe0;
+  --p2:            #6b2a2a;
+  --p2-light:      #f8ece8;
+  --p2-border:     #e0b8b8;
+  --terminal-bg:   #1a1a1a;
+  --terminal-green:#4ec94e;
+  --sidebar-bg:    #2d2d2d;
+  --sidebar-blue:  #6fb3e8;
+  --mac-bg:        #3a3a3a;
+  --mac-orange:    #e8a84e;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--white); color: var(--leather); font-family: 'Outfit', sans-serif; font-weight: 300; line-height: 1.7; font-size: 16px; }
+
+/* ── HEADER ── */
+header { border-bottom: 1px solid var(--rule); padding: 36px 80px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); z-index: 100; }
+.logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; letter-spacing: 0.45em; text-transform: uppercase; color: var(--bourbon); }
+.header-tag { font-size: 11px; font-weight: 400; letter-spacing: 0.28em; text-transform: uppercase; color: var(--smoke); }
+
+/* ── HERO ── */
+.hero { padding: 96px 80px 72px; max-width: 900px; border-bottom: 1px solid var(--rule); }
+.hero-eyebrow { font-size: 11px; font-weight: 400; letter-spacing: 0.38em; text-transform: uppercase; color: var(--bourbon); margin-bottom: 28px; display: flex; align-items: center; gap: 12px; }
+.hero-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--bourbon); }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: 68px; font-weight: 700; color: var(--leather); line-height: 0.92; letter-spacing: -0.025em; margin-bottom: 36px; }
+.hero-title em { font-style: italic; color: var(--bourbon); }
+.hero-desc { font-size: 17px; font-weight: 300; color: var(--leather-soft); line-height: 1.82; max-width: 620px; margin-bottom: 44px; }
+.meta-row { display: flex; gap: 36px; align-items: center; }
+.meta-item { display: flex; flex-direction: column; gap: 4px; }
+.meta-n { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 600; color: var(--leather); line-height: 1; }
+.meta-l { font-size: 10px; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: var(--smoke); }
+.meta-sep { width: 1px; height: 36px; background: var(--rule); }
+
+/* ── LIBRARY NOTE ── */
+.library-note { margin: 0 80px; padding: 32px 40px; border: 1px solid var(--bourbon-pale); border-left: 3px solid var(--bourbon); background: var(--linen); }
+.library-note-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; color: var(--leather); margin-bottom: 10px; }
+.library-note p { font-size: 14px; color: var(--leather-soft); line-height: 1.78; margin-bottom: 10px; }
+.library-note p:last-of-type { margin-bottom: 12px; }
+.repo-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--bourbon); text-decoration: none; border-bottom: 1px solid var(--bourbon-pale); padding-bottom: 2px; transition: border-color 0.2s; }
+.repo-link:hover { border-color: var(--bourbon); }
+
+/* ── PATHWAY CHOOSER ── */
+.pathway-section { padding: 72px 80px; border-bottom: 1px solid var(--rule); }
+.pathway-section-title { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 700; color: var(--leather); margin-bottom: 8px; line-height: 1.1; }
+.pathway-section-title em { font-style: italic; color: var(--bourbon); }
+.pathway-section-sub { font-size: 15px; color: var(--smoke); margin-bottom: 40px; font-weight: 300; }
+.pathway-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.pathway-card { border: 1px solid var(--rule); padding: 36px 32px; text-decoration: none; display: flex; flex-direction: column; gap: 16px; transition: border-color 0.2s, transform 0.15s; position: relative; overflow: hidden; }
+.pathway-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.pathway-card.p1::before { background: var(--p1); }
+.pathway-card.p2::before { background: var(--p2); }
+.pathway-card.p1 { background: var(--p1-light); border-color: var(--p1-border); }
+.pathway-card.p2 { background: var(--p2-light); border-color: var(--p2-border); }
+.pathway-card.p1:hover { border-color: var(--p1); transform: translateY(-2px); }
+.pathway-card.p2:hover { border-color: var(--p2); transform: translateY(-2px); }
+.pathway-num { font-size: 10px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; }
+.pathway-card.p1 .pathway-num { color: var(--p1); }
+.pathway-card.p2 .pathway-num { color: var(--p2); }
+.pathway-card-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 700; color: var(--leather); line-height: 1.1; }
+.pathway-card-desc { font-size: 14px; color: var(--leather-soft); line-height: 1.75; flex: 1; }
+.pathway-card-for { font-size: 12px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; padding-top: 14px; border-top: 1px solid var(--rule); }
+.pathway-card.p1 .pathway-card-for { color: var(--p1); }
+.pathway-card.p2 .pathway-card-for { color: var(--p2); }
+.pathway-card-cta { font-size: 13px; font-weight: 500; color: var(--bourbon); }
+
+/* ── MAIN LAYOUT ── */
+.main { display: grid; grid-template-columns: 268px 1fr; min-height: 100vh; }
+
+/* ── SIDEBAR NAV ── */
+nav { border-right: 1px solid var(--rule); padding: 52px 36px; position: sticky; top: 73px; height: calc(100vh - 73px); overflow-y: auto; }
+.nav-section { margin-bottom: 28px; }
+.nav-section-title { font-size: 9px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--smoke-light); margin-bottom: 10px; }
+.nav-item { display: block; font-size: 13px; font-weight: 300; color: var(--smoke); text-decoration: none; padding: 5px 0 5px 12px; margin-left: -12px; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.nav-item:hover { color: var(--leather); border-left-color: var(--bourbon); }
+.nav-item.p1-item:hover { border-left-color: var(--p1); color: var(--p1); }
+.nav-item.p2-item:hover { border-left-color: var(--p2); color: var(--p2); }
+.nav-pathway-label { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 10px; margin-bottom: 6px; display: inline-block; }
+.nav-pathway-label.p1 { color: var(--p1); background: var(--p1-light); }
+.nav-pathway-label.p2 { color: var(--p2); background: var(--p2-light); }
+
+/* ── CONTENT ── */
+.content { padding: 56px 72px 120px; max-width: 780px; }
+
+/* ── SECTION HEADERS ── */
+.part-header { margin-bottom: 44px; padding-bottom: 28px; border-bottom: 1px solid var(--rule); }
+.part-num { font-size: 10px; font-weight: 400; letter-spacing: 0.38em; text-transform: uppercase; color: var(--bourbon); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+.part-num::before { content: ''; display: block; width: 22px; height: 1px; background: var(--bourbon); }
+.part-num.p1-color { color: var(--p1); }
+.part-num.p1-color::before { background: var(--p1); }
+.part-num.p2-color { color: var(--p2); }
+.part-num.p2-color::before { background: var(--p2); }
+.part-title { font-family: 'Cormorant Garamond', serif; font-size: 46px; font-weight: 700; color: var(--leather); line-height: 1.0; letter-spacing: -0.02em; }
+.part-title em { font-style: italic; color: var(--bourbon); }
+.part-title.p1-color em { color: var(--p1); }
+.part-title.p2-color em { color: var(--p2); }
+
+/* ── PATHWAY BANNERS ── */
+.pathway-banner { padding: 18px 24px; margin-bottom: 44px; font-size: 14px; line-height: 1.6; }
+.pathway-banner.p1 { background: var(--p1-light); border: 1px solid var(--p1-border); border-left: 3px solid var(--p1); color: var(--p1); }
+.pathway-banner.p2 { background: var(--p2-light); border: 1px solid var(--p2-border); border-left: 3px solid var(--p2); color: var(--p2); }
+.pathway-banner strong { font-weight: 500; }
+
+/* ── STEPS ── */
+.step { margin-bottom: 52px; }
+.step-num { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 600; letter-spacing: 0.2em; color: var(--smoke-light); text-transform: uppercase; margin-bottom: 6px; }
+.step-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; color: var(--leather); margin-bottom: 10px; line-height: 1.2; }
+.step p { font-size: 15px; color: var(--leather-soft); line-height: 1.8; margin-bottom: 14px; }
+.step p:last-of-type { margin-bottom: 0; }
+.why-note { font-size: 13px; color: var(--smoke); line-height: 1.7; font-style: italic; margin-bottom: 14px; padding-left: 14px; border-left: 2px solid var(--rule); }
+
+/* ── PASTE LOCATION LABELS ── */
+.paste-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+.paste-label.terminal {
+  background: var(--terminal-bg);
+  color: var(--terminal-green);
+  border: 1px solid rgba(78,201,78,0.3);
+}
+
+.paste-label.terminal::before {
+  content: '>';
+  font-size: 12px;
+  color: var(--terminal-green);
+}
+
+.paste-label.sidebar {
+  background: var(--sidebar-bg);
+  color: var(--sidebar-blue);
+  border: 1px solid rgba(111,179,232,0.3);
+}
+
+.paste-label.sidebar::before {
+  content: '◈';
+  font-size: 10px;
+  color: var(--sidebar-blue);
+}
+
+.paste-label.mac-terminal {
+  background: var(--mac-bg);
+  color: var(--mac-orange);
+  border: 1px solid rgba(232,168,78,0.3);
+}
+
+.paste-label.mac-terminal::before {
+  content: '⌘';
+  font-size: 11px;
+  color: var(--mac-orange);
+}
+
+.paste-label.file {
+  background: var(--linen);
+  color: var(--bourbon-deep);
+  border: 1px solid var(--bourbon-pale);
+}
+
+.paste-label.file::before {
+  content: '↗';
+  font-size: 11px;
+  color: var(--bourbon-deep);
+}
+
+/* code block sits flush against label */
+.paste-label + pre { margin-top: 0; border-top: none; }
+
+/* ── CODE BLOCKS ── */
+pre { background: var(--code-bg); border: 1px solid var(--code-border); border-left: 3px solid var(--bourbon-pale); padding: 18px 22px; overflow-x: auto; margin: 14px 0; }
+pre code { font-family: 'Courier New', monospace; font-size: 13px; color: var(--leather); line-height: 1.8; }
+.approve-note { font-size: 12px; color: var(--smoke); margin-top: 6px; font-style: italic; display: flex; align-items: center; gap: 6px; }
+.approve-note::before { content: '↳'; color: var(--bourbon); }
+code:not(pre code) { font-family: 'Courier New', monospace; font-size: 12px; background: var(--code-bg); border: 1px solid var(--code-border); padding: 2px 5px; color: var(--bourbon-deep); }
+
+/* ── FORK BLOCK ── */
+.fork-block { border: 1px solid var(--rule); padding: 40px; margin: 0 0 72px; text-align: center; background: var(--off-white); }
+.fork-eyebrow { font-size: 10px; font-weight: 400; letter-spacing: 0.38em; text-transform: uppercase; color: var(--bourbon); margin-bottom: 16px; }
+.fork-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: var(--leather); margin-bottom: 10px; }
+.fork-title em { font-style: italic; color: var(--bourbon); }
+.fork-desc { font-size: 15px; color: var(--smoke); margin-bottom: 36px; line-height: 1.7; max-width: 480px; margin-left: auto; margin-right: auto; }
+.fork-options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; }
+.fork-option { padding: 24px; text-decoration: none; display: flex; flex-direction: column; gap: 10px; transition: transform 0.15s; }
+.fork-option.p1 { background: var(--p1-light); border: 1px solid var(--p1-border); }
+.fork-option.p2 { background: var(--p2-light); border: 1px solid var(--p2-border); }
+.fork-option:hover { transform: translateY(-2px); }
+.fork-option-label { font-size: 10px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; }
+.fork-option.p1 .fork-option-label { color: var(--p1); }
+.fork-option.p2 .fork-option-label { color: var(--p2); }
+.fork-option-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--leather); line-height: 1.2; }
+.fork-option-desc { font-size: 13px; color: var(--leather-soft); line-height: 1.7; }
+.fork-option-arrow { font-size: 13px; font-weight: 500; margin-top: 4px; }
+.fork-option.p1 .fork-option-arrow { color: var(--p1); }
+.fork-option.p2 .fork-option-arrow { color: var(--p2); }
+
+/* ── USAGE TABLE ── */
+.usage-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+.usage-table th { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--smoke); text-align: left; padding: 10px 16px; border-bottom: 2px solid var(--rule); }
+.usage-table td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--leather-soft); line-height: 1.5; vertical-align: top; }
+.usage-table td:first-child { font-weight: 500; color: var(--leather); }
+.usage-table tr:last-child td { border-bottom: none; }
+
+/* ── SKILL BUILD STEPS ── */
+.skill-step { display: flex; gap: 20px; margin-bottom: 28px; align-items: flex-start; }
+.skill-step-num { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; font-style: italic; color: var(--p2); line-height: 1; flex-shrink: 0; width: 28px; margin-top: 2px; }
+.skill-step-content { flex: 1; }
+.skill-step-title { font-size: 15px; font-weight: 500; color: var(--leather); margin-bottom: 6px; }
+.skill-step-desc { font-size: 14px; color: var(--leather-soft); line-height: 1.75; }
+
+/* ── ERROR PROMPT BLOCK ── */
+.error-prompt-section { background: var(--linen); border: 1px solid var(--bourbon-pale); border-left: 3px solid var(--bourbon); padding: 40px; margin-bottom: 32px; }
+.error-prompt-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--leather); margin-bottom: 12px; }
+.error-prompt-desc { font-size: 15px; color: var(--leather-soft); line-height: 1.8; margin-bottom: 24px; }
+.error-prompt-desc strong { color: var(--leather); font-weight: 500; }
+.error-why { font-size: 14px; color: var(--smoke); line-height: 1.75; margin-bottom: 24px; font-style: italic; }
+
+/* ── COST ── */
+.cost-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--rule); font-size: 15px; }
+.cost-row:last-child { border-bottom: none; }
+.cost-item { color: var(--leather-soft); }
+.cost-value { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--bourbon); }
+
+.section-gap { margin-bottom: 72px; }
+
+/* ── FOOTER ── */
+footer { border-top: 1px solid var(--rule); padding: 44px 80px; display: flex; justify-content: space-between; align-items: center; background: var(--off-white); }
+.footer-left { display: flex; flex-direction: column; gap: 5px; }
+.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 700; letter-spacing: 0.4em; text-transform: uppercase; color: var(--bourbon); }
+.footer-tag { font-size: 12px; font-weight: 300; color: var(--smoke); }
+.footer-links { display: flex; gap: 28px; }
+.footer-link { font-size: 12px; font-weight: 300; color: var(--smoke); text-decoration: none; letter-spacing: 0.1em; transition: color 0.15s; }
+.footer-link:hover { color: var(--bourbon); }
+
+/* ── LEGEND ── */
+.legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 40px; padding: 20px 24px; border: 1px solid var(--rule); background: var(--off-white); }
+.legend-title { font-size: 10px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--smoke); width: 100%; margin-bottom: 4px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--leather-soft); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--off-white); }
+::-webkit-scrollbar-thumb { background: var(--bourbon-pale); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">URIM</span>
+  <span class="header-tag">Research System · Install Guide</span>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Send-Away Document</div>
+  <h1 class="hero-title">Research is<br>just the <em>start.</em></h1>
+  <p class="hero-desc">One command. YouTube searched, deep web research completed, best sources curated, a NotebookLM notebook loaded and ready. Use it to stay informed. Or use it to build AI agents that know your domain inside out. Two pathways. Same install.</p>
+  <div class="meta-row">
+    <div class="meta-item"><span class="meta-n">3</span><span class="meta-l">Tools connected</span></div>
+    <div class="meta-sep"></div>
+    <div class="meta-item"><span class="meta-n">30m</span><span class="meta-l">To install</span></div>
+    <div class="meta-sep"></div>
+    <div class="meta-item"><span class="meta-n">$0</span><span class="meta-l">Additional cost</span></div>
+  </div>
+</div>
+
+<div class="library-note" style="margin:0 80px;">
+  <div class="library-note-title">The Library That Makes This Possible</div>
+  <p>NotebookLM does not have an official public API. This system uses an open-source Python library called <strong>notebooklm-py</strong> built by Tang Lin that acts as a bridge by automating the NotebookLM web interface using a real browser session in the background.</p>
+  <p>The library is community-built and actively maintained. Because it is unofficial, Google could update NotebookLM in the future and require a library update. For now it works reliably and is the only way to connect NotebookLM to Claude Code programmatically.</p>
+  <a class="repo-link" href="https://github.com/teng-lin/notebooklm-py" target="_blank">github.com/teng-lin/notebooklm-py →</a>
+</div>
+
+<div class="pathway-section">
+  <h2 class="pathway-section-title">Choose Your <em>Pathway</em></h2>
+  <p class="pathway-section-sub">The install is identical for both. The difference is what you do with the notebook once it is built.</p>
+  <div class="pathway-cards">
+    <a class="pathway-card p1" href="#pathway1">
+      <div class="pathway-num">Pathway 01</div>
+      <div class="pathway-card-title">Research Only</div>
+      <div class="pathway-card-desc">Use the system to research any topic faster than ever. Get the best YouTube videos and web sources loaded into NotebookLM, then generate audio overviews, slide decks, flashcards, and more in minutes instead of hours.</div>
+      <div class="pathway-card-for">For researchers, consultants, content creators, and business owners who want to stay sharp</div>
+      <div class="pathway-card-cta">Jump to Pathway 1 →</div>
+    </a>
+    <a class="pathway-card p2" href="#pathway2">
+      <div class="pathway-num">Pathway 02</div>
+      <div class="pathway-card-title">Research to Build</div>
+      <div class="pathway-card-desc">Take the research further. Use your loaded notebook as the foundation for a Claude Code skill or agent that actually knows the domain. Your agent works from a real knowledge base that compounds over time.</div>
+      <div class="pathway-card-for">For builders using Claude Code who want domain-specific AI agents that know their work</div>
+      <div class="pathway-card-cta">Jump to Pathway 2 →</div>
+    </a>
+  </div>
+</div>
+
+<div class="main">
+  <nav>
+    <div class="nav-section">
+      <div class="nav-section-title">Before You Start</div>
+      <a class="nav-item" href="#prereqs">Prerequisites</a>
+      <a class="nav-item" href="#legend">Where to Paste</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Installation</div>
+      <a class="nav-item" href="#part1">Part 1 — yt-search</a>
+      <a class="nav-item" href="#part2">Part 2 — NotebookLM</a>
+      <a class="nav-item" href="#part3">Part 3 — /research-topic</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Pathways</div>
+      <div class="nav-pathway-label p1">Pathway 1</div>
+      <a class="nav-item p1-item" href="#pathway1">Research Only</a>
+      <a class="nav-item p1-item" href="#p1-outputs">NotebookLM Outputs</a>
+      <div class="nav-pathway-label p2" style="margin-top:10px;">Pathway 2</div>
+      <a class="nav-item p2-item" href="#pathway2">Research to Build</a>
+      <a class="nav-item p2-item" href="#p2-skill">Building the Skill</a>
+      <a class="nav-item p2-item" href="#p2-compound">Compounding Over Time</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Reference</div>
+      <a class="nav-item" href="#errors">If Something Goes Wrong</a>
+      <a class="nav-item" href="#cost">Cost</a>
+      <a class="nav-item" href="#resources">Resources</a>
+    </div>
+  </nav>
+
+  <div class="content">
+
+    <!-- PREREQS -->
+    <div id="prereqs" class="section-gap" style="padding-top:16px;">
+      <div class="part-header">
+        <div class="part-num">Before You Start</div>
+        <h2 class="part-title">What You <em>Need</em></h2>
+      </div>
+      <div class="step">
+        <p>Four things in place before starting. If any are missing, set them up first.</p>
+        <ul style="list-style:none; margin-top:18px; display:flex; flex-direction:column; gap:12px;">
+          <li style="display:flex; gap:12px;"><span style="color:var(--bourbon); flex-shrink:0;">→</span><span style="font-size:15px; color:var(--leather-soft);">Mac with <strong style="color:var(--leather);">Cursor</strong> installed</span></li>
+          <li style="display:flex; gap:12px;"><span style="color:var(--bourbon); flex-shrink:0;">→</span><span style="font-size:15px; color:var(--leather-soft);"><strong style="color:var(--leather);">Claude Code</strong> running inside Cursor</span></li>
+          <li style="display:flex; gap:12px;"><span style="color:var(--bourbon); flex-shrink:0;">→</span><span style="font-size:15px; color:var(--leather-soft);">A <strong style="color:var(--leather);">Google account</strong> for NotebookLM</span></li>
+          <li style="display:flex; gap:12px;"><span style="color:var(--bourbon); flex-shrink:0;">→</span><span style="font-size:15px; color:var(--leather-soft);"><strong style="color:var(--leather);">Homebrew</strong> installed — go to <a href="https://brew.sh" style="color:var(--bourbon);">brew.sh</a> for the one-line install</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- WHERE TO PASTE LEGEND -->
+    <div id="legend" class="section-gap">
+      <div class="part-header">
+        <div class="part-num">Reference</div>
+        <h2 class="part-title">Where to <em>Paste</em></h2>
+      </div>
+      <div class="step">
+        <p>Every code block in this guide is labeled with one of three locations. Here is what each one means.</p>
+        <div style="display:flex; flex-direction:column; gap:20px; margin-top:24px;">
+
+          <div style="display:flex; gap:20px; align-items:flex-start;">
+            <span class="paste-label terminal" style="flex-shrink:0; white-space:nowrap;">Cursor Terminal</span>
+            <div>
+              <p style="margin-bottom:6px;">The terminal panel at the bottom of Cursor. Open it by pressing <code>Ctrl + `</code> (Control and the backtick key, top left of your keyboard). This is where most install commands go.</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:20px; align-items:flex-start;">
+            <span class="paste-label mac-terminal" style="flex-shrink:0; white-space:nowrap;">Mac Terminal</span>
+            <div>
+              <p style="margin-bottom:6px;">The standalone Terminal app on your Mac. Open it by pressing <strong>Cmd + Space</strong>, typing <strong>Terminal</strong>, and hitting Enter. Only two steps in this guide require the Mac Terminal — both involve Google authentication which cannot run inside Cursor.</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:20px; align-items:flex-start;">
+            <span class="paste-label sidebar" style="flex-shrink:0; white-space:nowrap;">Claude Code Sidebar</span>
+            <div>
+              <p style="margin-bottom:6px;">The chat panel on the right side of Cursor where you talk to Claude Code. This is where you paste prompts that ask Claude to build skills and run commands on your behalf.</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:20px; align-items:flex-start;">
+            <span class="paste-label file" style="flex-shrink:0; white-space:nowrap;">Into a File</span>
+            <div>
+              <p style="margin-bottom:6px;">A blank file that Cursor opens for you. Paste the content in and save with <code>Cmd + S</code>.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 1 -->
+    <div id="part1" class="section-gap">
+      <div class="part-header">
+        <div class="part-num">Part 01</div>
+        <h2 class="part-title">Install <em>yt-search</em></h2>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 01</div>
+        <div class="step-title">Open the Cursor terminal</div>
+        <p>Press <code>Ctrl + `</code> (Control and the backtick key, top left of your keyboard). The terminal panel opens at the bottom of Cursor.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 02</div>
+        <div class="step-title">Install yt-dlp</div>
+        <p class="why-note">yt-dlp is the tool that searches YouTube behind the scenes. The skill calls it automatically.</p>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>pip install yt-dlp</code></pre>
+        <p class="approve-note">Press 1 when Claude Code asks for approval. Wait for it to finish.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 03</div>
+        <div class="step-title">Add yt-dlp to your PATH</div>
+        <p class="why-note">This tells your Mac where to find yt-dlp when it runs.</p>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>echo 'export PATH="$HOME/Library/Python/3.9/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc</code></pre>
+        <p class="approve-note">Press 1 when asked for approval.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 04</div>
+        <div class="step-title">Create the skill folders</div>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>mkdir -p ~/.claude/commands && mkdir -p ~/.claude/skills/yt-search/scripts</code></pre>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 05</div>
+        <div class="step-title">Open the command file</div>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>code ~/.claude/commands/yt-search.md</code></pre>
+        <p>A blank file opens in Cursor. Now paste the content below into that file and save with <code>Cmd + S</code>.</p>
+        <span class="paste-label file">Into the File</span>
+        <pre><code>---
+description: "Search YouTube and return structured video results"
+argument-hint: "&lt;query&gt; [--count N]"
+allowed-tools:
+  - Bash
+---
+
+Run the YouTube search script with the user's arguments.
+
+Execute: python ~/.claude/skills/yt-search/scripts/search.py $ARGUMENTS
+
+Present the output to the user. If the script errors, explain and suggest fixes.</code></pre>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 06</div>
+        <div class="step-title">Open the search script</div>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>code ~/.claude/skills/yt-search/scripts/search.py</code></pre>
+        <p>A blank file opens. Paste the full script below into it and save with <code>Cmd + S</code>.</p>
+        <span class="paste-label file">Into the File</span>
+        <pre><code>#!/usr/bin/env python3
+import io, json, shutil, subprocess, sys
+from datetime import datetime, timedelta
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+
+def parse_args(argv):
+    args = argv[1:]; count = 20; months = 6; query_parts = []; i = 0
+    while i &lt; len(args):
+        if args[i] == "--count" and i + 1 &lt; len(args):
+            count = int(args[i + 1]); i += 2
+        elif args[i] == "--months" and i + 1 &lt; len(args):
+            months = int(args[i + 1]); i += 2
+        elif args[i] == "--no-date-filter":
+            months = 0; i += 1
+        else:
+            query_parts.append(args[i]); i += 1
+    query = " ".join(query_parts)
+    if not query:
+        print("Usage: search.py &lt;query&gt; [--count N] [--months N] [--no-date-filter]", file=sys.stderr); sys.exit(1)
+    return query, count, months
+
+def fmt_subs(n):
+    if n is None: return "N/A"
+    if n >= 1_000_000: return f"{n/1_000_000:.1f}M"
+    if n >= 1_000: return f"{n/1_000:.1f}K"
+    return str(n)
+
+def fmt_views(n): return "N/A" if n is None else f"{n:,}"
+
+def fmt_dur(info):
+    if info.get("duration_string"): return info["duration_string"]
+    dur = info.get("duration")
+    if dur is None: return "N/A"
+    dur = int(dur); h, r = divmod(dur, 3600); m, s = divmod(r, 60)
+    return f"{h}:{m:02d}:{s:02d}" if h else f"{m}:{s:02d}"
+
+def fmt_date(raw):
+    if not raw or len(raw) != 8: return "N/A"
+    try: return datetime.strptime(raw, "%Y%m%d").strftime("%b %d, %Y")
+    except: return f"{raw[:4]}-{raw[4:6]}-{raw[6:8]}"
+
+def main():
+    query, count, months = parse_args(sys.argv)
+    if not shutil.which("yt-dlp"):
+        print("Error: yt-dlp not found. Install: pip install yt-dlp", file=sys.stderr); sys.exit(1)
+    fetch = count * 2 if months > 0 else count
+    cmd = ["yt-dlp", f"ytsearch{fetch}:{query}", "--dump-json", "--no-download", "--no-warnings", "--quiet"]
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        print("Error: Search timed out.", file=sys.stderr); sys.exit(1)
+    if r.returncode != 0 and not r.stdout.strip():
+        print(f"Error: {r.stderr.strip()}", file=sys.stderr); sys.exit(1)
+    videos = []
+    for line in r.stdout.strip().splitlines():
+        try: videos.append(json.loads(line))
+        except: continue
+    if not videos:
+        print("No results found.", file=sys.stderr); sys.exit(0)
+    if months > 0:
+        cutoff = (datetime.now() - timedelta(days=months*30)).strftime("%Y%m%d")
+        filtered = [v for v in videos if (v.get("upload_date") or "00000000") >= cutoff]
+        skipped = len(videos) - len(filtered); videos = filtered
+        if skipped: print(f"(Filtered {skipped} older video(s))\n", file=sys.stderr)
+    if not videos:
+        print(f"No results in last {months} months.", file=sys.stderr); sys.exit(0)
+    videos = videos[:count]; d = "\u2500"*60
+    for i, v in enumerate(videos, 1):
+        url = f"https://youtube.com/watch?v={v.get('id','')}"
+        meta = f"{v.get('channel','?')} ({fmt_subs(v.get('channel_follower_count'))}) · {fmt_views(v.get('view_count'))} views · {fmt_dur(v)} · {fmt_date(v.get('upload_date',''))}"
+        print(d); print(f" {i:>2}. {v.get('title','?')}"); print(f"     {meta}"); print(f"     {url}")
+    print(d)
+
+if __name__ == "__main__":
+    main()</code></pre>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 07</div>
+        <div class="step-title">Test yt-search</div>
+        <p>Open a new session in Claude Code and type the command below. You should see a list of YouTube videos. If you do, move to Part 2.</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>/yt-search claude code skills</code></pre>
+      </div>
+    </div>
+
+    <!-- PART 2 -->
+    <div id="part2" class="section-gap">
+      <div class="part-header">
+        <div class="part-num">Part 02</div>
+        <h2 class="part-title">Install <em>NotebookLM</em></h2>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 08</div>
+        <div class="step-title">Install Python 3.12</div>
+        <p class="why-note">NotebookLM-py requires Python 3.10 or newer. Most Macs ship with 3.9 which is too old. This installs a newer version without breaking anything.</p>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>brew install python@3.12</code></pre>
+        <p class="approve-note">Takes a few minutes. Approve any prompts with 1.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 09</div>
+        <div class="step-title">Install the notebooklm-py library</div>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>pipx install "notebooklm-py[browser]" --python /opt/homebrew/bin/python3.12 --force</code></pre>
+        <p>Then install the browser component:</p>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>~/.local/pipx/venvs/notebooklm-py/bin/playwright install chromium</code></pre>
+        <p class="approve-note">Approve both with 1. Wait for each to finish.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 10</div>
+        <div class="step-title">Fix the PATH</div>
+        <p class="why-note">This ensures the correct version of notebooklm runs every time you open a terminal.</p>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc</code></pre>
+        <p>Remove the old version if it exists:</p>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>rm ~/Library/Python/3.9/bin/notebooklm 2>/dev/null</code></pre>
+        <p>Verify the correct version is running:</p>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>notebooklm --version</code></pre>
+        <p>You should see <code>NotebookLM CLI, version 0.3.4</code> or higher. If you see a version number, continue.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 11</div>
+        <div class="step-title">Authenticate with Google</div>
+        <p class="why-note">This step must run in the Mac Terminal app, not the Cursor terminal. The login opens a browser window that Claude Code cannot handle.</p>
+        <p>Press <strong>Cmd + Space</strong>, type <strong>Terminal</strong>, hit Enter to open the Mac Terminal app. Then run:</p>
+        <span class="paste-label mac-terminal">Mac Terminal</span>
+        <pre><code>notebooklm login</code></pre>
+        <p>A browser window opens. Log into your Google account, go to <strong>notebooklm.google.com</strong>, wait until you see the NotebookLM homepage, then come back to the Mac Terminal window and press Enter.</p>
+        <p>You will see a confirmation that your authentication was saved.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 12</div>
+        <div class="step-title">Install the NotebookLM skill into Claude Code</div>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>~/.local/bin/notebooklm skill install</code></pre>
+        <p>Verify both skills are installed:</p>
+        <span class="paste-label terminal">Cursor Terminal</span>
+        <pre><code>ls ~/.claude/skills/</code></pre>
+        <p>You should see <code>yt-search</code> and <code>notebooklm</code> listed. If both are there, continue.</p>
+      </div>
+    </div>
+
+    <!-- PART 3 -->
+    <div id="part3" class="section-gap">
+      <div class="part-header">
+        <div class="part-num">Part 03</div>
+        <h2 class="part-title">Build <em>/research-topic</em></h2>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 13</div>
+        <div class="step-title">Build the skill</div>
+        <p class="why-note">This creates the command that chains yt-search and NotebookLM into one automated step. Claude Code builds it for you.</p>
+        <p>Open a new session in the Claude Code sidebar and paste the entire prompt below:</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>Use the new-capability skill to build a skill called /research-topic that does the following:
+
+1. Takes a search query as input
+2. Uses yt-search to find the top 10 YouTube videos on that topic from the last 6 months
+3. Automatically creates a NEW NotebookLM notebook named after the search query
+4. Loads all the YouTube URLs as sources into that notebook
+5. Runs NotebookLM deep web research on the same topic automatically
+6. Ranks and filters the deep research results down to the top 10 highest quality web sources
+7. Adds those top 10 sources to the notebook alongside the YouTube sources
+8. Confirms when complete with a breakdown of YouTube and web sources loaded
+
+Default behavior is always a new notebook. Adding to an existing notebook only happens when I use --add-to.</code></pre>
+        <p class="approve-note">Approve all permission prompts with 2 as they appear. This takes a few minutes to build.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 14</div>
+        <div class="step-title">Test the full system</div>
+        <p>Open a new Claude Code session and run the command below. You should see it search YouTube, create a notebook, load sources, run deep research, filter to the top 10 web sources, and confirm with a full breakdown. The process takes 5 to 10 minutes.</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>/research-topic AI transformation consulting</code></pre>
+      </div>
+    </div>
+
+    <!-- FORK -->
+    <div id="fork" class="fork-block section-gap">
+      <div class="fork-eyebrow">Installation complete</div>
+      <div class="fork-title">Your system is <em>ready.</em></div>
+      <p class="fork-desc">Both pathways start from here. Choose what you want to do with the notebooks you build.</p>
+      <div class="fork-options">
+        <a class="fork-option p1" href="#pathway1">
+          <div class="fork-option-label">Pathway 01</div>
+          <div class="fork-option-title">I want to use this for research</div>
+          <div class="fork-option-desc">Generate audio overviews, slide decks, flashcards, and more from any notebook you build.</div>
+          <div class="fork-option-arrow">Continue to Pathway 1 →</div>
+        </a>
+        <a class="fork-option p2" href="#pathway2">
+          <div class="fork-option-label">Pathway 02</div>
+          <div class="fork-option-title">I want to build agents from this</div>
+          <div class="fork-option-desc">Take the notebook and build a Claude Code skill that knows the domain and never forgets it.</div>
+          <div class="fork-option-arrow">Continue to Pathway 2 →</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- PATHWAY 1 -->
+    <div id="pathway1" class="section-gap">
+      <div class="pathway-banner p1"><strong>Pathway 1 — Research Only</strong> &nbsp;·&nbsp; Use your notebooks to generate content, stay informed, and go deeper on any topic.</div>
+      <div class="part-header">
+        <div class="part-num p1-color">Pathway 01</div>
+        <h2 class="part-title p1-color">Research <em>Only</em></h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Running a YouTube search</div>
+        <p>Type any of these directly in a new Claude Code session.</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>/yt-search [topic]
+/yt-search AI agents --count 10
+/yt-search AIOS tutorial --months 3
+/yt-search automation frameworks --no-date-filter</code></pre>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Creating a research notebook</div>
+        <p>Always creates a brand new notebook named after your query. Type directly in Claude Code.</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>/research-topic B2B sales prospecting frameworks
+/research-topic chamber of commerce operations
+/research-topic AI transformation for small business</code></pre>
+        <p style="margin-top:16px;">To add research to an existing notebook instead of creating a new one:</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>/research-topic lead generation --add-to "Sales Research"</code></pre>
+      </div>
+
+      <div id="p1-outputs" class="step">
+        <div class="step-title">Generating content from a notebook</div>
+        <p>Once a notebook is loaded, ask Claude Code in plain language. Replace <code>[name]</code> with your actual notebook name.</p>
+        <table class="usage-table">
+          <thead><tr><th>Output</th><th>Format</th><th>What to type in Claude Code</th></tr></thead>
+          <tbody>
+            <tr><td>Audio Overview</td><td><code>MP3</code></td><td>Generate an audio overview for the "[name]" notebook and download as MP3</td></tr>
+            <tr><td>Video Overview</td><td><code>MP4</code></td><td>Generate a video overview for the "[name]" notebook and download as MP4</td></tr>
+            <tr><td>Slide Deck</td><td><code>PDF / PPTX</code></td><td>Generate a slide deck for the "[name]" notebook and download as PDF</td></tr>
+            <tr><td>Mind Map</td><td><code>JSON</code></td><td>Generate a mind map for the "[name]" notebook</td></tr>
+            <tr><td>Flashcards</td><td><code>JSON / HTML</code></td><td>Generate flashcards for the "[name]" notebook</td></tr>
+            <tr><td>Quiz</td><td><code>Markdown</code></td><td>Generate a quiz for the "[name]" notebook</td></tr>
+            <tr><td>Infographic</td><td><code>PNG</code></td><td>Generate an infographic for the "[name]" notebook and download as PNG</td></tr>
+            <tr><td>Report / Study Guide</td><td><code>Markdown</code></td><td>Generate a study guide from the "[name]" notebook</td></tr>
+            <tr><td>Data Table</td><td><code>CSV</code></td><td>Generate a data table from the "[name]" notebook and download as CSV</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PATHWAY 2 -->
+    <div id="pathway2" class="section-gap">
+      <div class="pathway-banner p2"><strong>Pathway 2 — Research to Build</strong> &nbsp;·&nbsp; Use your notebook as the foundation for a Claude Code skill or agent that knows your domain.</div>
+      <div class="part-header">
+        <div class="part-num p2-color">Pathway 02</div>
+        <h2 class="part-title p2-color">Research to <em>Build</em></h2>
+      </div>
+
+      <div class="step">
+        <p>This is where most AI workflows stop. Yours is where they start building.</p>
+        <p>The notebook you built in Part 3 contains curated, ranked, real-world knowledge on your topic. Instead of letting it sit there, you are going to feed it directly into Claude and build a skill that operates from that knowledge permanently. Every time you use the skill, Claude already knows the domain. You never have to re-explain the context.</p>
+      </div>
+
+      <div id="p2-skill" class="step">
+        <div class="step-title">Step 1 — Get a structured synthesis from your notebook</div>
+        <p>Before building the skill, ask NotebookLM to synthesize what it learned. Open a new Claude Code session and paste this, replacing the notebook name with yours:</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>Ask the "[your notebook name]" notebook: what are the core principles,
+frameworks, and best practices that come up most consistently across
+all sources? Give me a structured breakdown I can use to build a
+Claude skill around this domain.</code></pre>
+        <p>Copy the full response. This becomes the knowledge base for your skill.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Step 2 — Build the skill</div>
+        <p>Open a new Claude Code session. Paste the prompt below, then paste your notebook synthesis directly underneath it before hitting Enter:</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>I want to create a Claude skill for [your domain]. Here is the
+research and knowledge base I want this skill to work from:
+
+[paste your NotebookLM synthesis here]
+
+Build a skill that:
+- Activates automatically when I ask for help with [your domain]
+- Uses this knowledge base to inform every response
+- Follows the frameworks and best practices from the research
+- Produces outputs in [describe your preferred format]
+
+Ask me any clarifying questions before building.</code></pre>
+        <p class="approve-note">Approve all permission prompts with 2 as they appear.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Step 3 — Answer Claude's three questions</div>
+        <p>Claude Code will ask three things before it builds. Answer each one directly in the sidebar.</p>
+        <div style="display:flex; flex-direction:column; gap:16px; margin-top:16px;">
+          <div class="skill-step">
+            <div class="skill-step-num">1</div>
+            <div class="skill-step-content">
+              <div class="skill-step-title">What output types do you need?</div>
+              <div class="skill-step-desc">Example: cold emails, LinkedIn messages, full outreach sequences, audit reports, proposals. Be specific about what you want the skill to produce.</div>
+            </div>
+          </div>
+          <div class="skill-step">
+            <div class="skill-step-num">2</div>
+            <div class="skill-step-content">
+              <div class="skill-step-title">What inputs should Claude expect?</div>
+              <div class="skill-step-desc">Example: prospect name and company, client context and industry, product description. Tell it what information you will give it each time you use the skill.</div>
+            </div>
+          </div>
+          <div class="skill-step">
+            <div class="skill-step-num">3</div>
+            <div class="skill-step-content">
+              <div class="skill-step-title">How opinionated should the skill be?</div>
+              <div class="skill-step-desc">Very rigid (always follow the exact framework), flexible (suggest the framework but adapt to context), or loose (apply the knowledge without enforcing structure). Flexible works best for most use cases.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Step 4 — Test your new skill</div>
+        <p>Once Claude Code finishes building, open a new session, select your new skill, and give it a real scenario from your work:</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>Use the [skill name] skill. Here is the context:
+[describe a real situation from your work]</code></pre>
+        <p>You should get back a response that reflects the actual frameworks from your research — not generic AI output. The difference is immediate and noticeable.</p>
+      </div>
+
+      <div id="p2-compound" class="step">
+        <div class="step-title">How to make your skill smarter over time</div>
+        <p>Your skill compounds. Every time you run <code>/research-topic</code> on a related topic and synthesize the results, you can update the skill with new knowledge. Run this in a new Claude Code session:</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>/research-topic [related topic] --add-to "[existing notebook name]"</code></pre>
+        <p>Then ask the updated notebook for a new synthesis and update your skill file. The agent gets sharper with every notebook you add. This is what it means when intelligence compounds.</p>
+      </div>
+    </div>
+
+    <!-- ERRORS -->
+    <div id="errors" class="section-gap">
+      <div class="part-header">
+        <div class="part-num">Troubleshooting</div>
+        <h2 class="part-title">If Something Goes <em>Wrong</em></h2>
+      </div>
+
+      <div class="error-prompt-section">
+        <div class="error-prompt-title">Do not guess. Ask Claude.</div>
+        <p class="error-prompt-desc">Every machine is different. Instead of a list of pre-written error fixes that may or may not match what you see, use this prompt. It works for <strong>any error</strong> you hit during this install — not just the ones someone predicted.</p>
+        <p class="error-why">Copy the exact error message that appeared on your screen, paste it into the prompt below, and send it to Claude in a new Claude Code session.</p>
+        <span class="paste-label sidebar">Claude Code Sidebar</span>
+        <pre><code>I am installing a YouTube search and NotebookLM research system
+in Claude Code on a Mac. I got this error:
+
+[paste the exact error message here]
+
+Tell me exactly what caused this and give me the step by step fix.</code></pre>
+        <p style="font-size:14px; color:var(--leather-soft); line-height:1.78; margin-top:16px;">Claude will read your exact error, diagnose the specific cause, and give you the fix for your machine. This is more reliable than any pre-written list because it handles whatever you actually encounter rather than whatever someone else predicted.</p>
+      </div>
+
+      <div style="padding: 24px; border: 1px solid var(--rule); background: var(--off-white);">
+        <p style="font-size:14px; color:var(--leather-soft); line-height:1.78;"><strong style="color:var(--leather);">One thing worth knowing before you hit an error:</strong> the two most common issues during this install are PATH problems (your Mac cannot find a tool that is already installed) and Python version conflicts (a command ran on the wrong Python version). Both are fixable in under two minutes once you know which one it is. Claude will identify it immediately from your error message.</p>
+      </div>
+    </div>
+
+    <!-- COST -->
+    <div id="cost" class="section-gap">
+      <div class="part-header">
+        <div class="part-num">Cost</div>
+        <h2 class="part-title">What This <em>Costs</em></h2>
+      </div>
+      <div>
+        <div class="cost-row"><span class="cost-item">yt-dlp</span><span class="cost-value">Free</span></div>
+        <div class="cost-row"><span class="cost-item">notebooklm-py library</span><span class="cost-value">Free</span></div>
+        <div class="cost-row"><span class="cost-item">Google NotebookLM</span><span class="cost-value">Free</span></div>
+        <div class="cost-row"><span class="cost-item">NotebookLM deep web research</span><span class="cost-value">Free</span></div>
+        <div class="cost-row"><span class="cost-item">Claude Code (your existing plan)</span><span class="cost-value">$0 extra</span></div>
+        <div class="cost-row" style="border-top:2px solid var(--bourbon-pale); margin-top:4px;">
+          <span class="cost-item" style="font-weight:500; color:var(--leather);">Total additional cost</span>
+          <span class="cost-value" style="font-size:28px;">$0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESOURCES -->
+    <div id="resources" class="section-gap">
+      <div class="part-header">
+        <div class="part-num">Resources</div>
+        <h2 class="part-title">Links and <em>References</em></h2>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <a class="repo-link" href="https://github.com/teng-lin/notebooklm-py" target="_blank">notebooklm-py repository — github.com/teng-lin/notebooklm-py →</a>
+        <a class="repo-link" href="https://notebooklm.google.com" target="_blank">Google NotebookLM — notebooklm.google.com →</a>
+        <a class="repo-link" href="https://github.com/yt-dlp/yt-dlp" target="_blank">yt-dlp documentation — github.com/yt-dlp/yt-dlp →</a>
+        <a class="repo-link" href="https://urim.io" target="_blank">URIM — urim.io →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-left">
+    <span class="footer-logo">URIM</span>
+    <span class="footer-tag">AI in my DNA. Music in my soul. Clarity before automation.</span>
+  </div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://instagram.com/bruceelebee" target="_blank">@bruceelebee</a>
+    <a class="footer-link" href="https://urim.io" target="_blank">urim.io</a>
+  </div>
+</footer>
+
+</body>
+</html>
