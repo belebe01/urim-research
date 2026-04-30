@@ -40,6 +40,9 @@ body { background: var(--white); color: var(--leather); font-family: 'Outfit', s
 header { border-bottom: 1px solid var(--rule); padding: 36px 80px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); z-index: 100; }
 .logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; letter-spacing: 0.45em; text-transform: uppercase; color: var(--bourbon); }
 .header-tag { font-size: 11px; font-weight: 400; letter-spacing: 0.28em; text-transform: uppercase; color: var(--smoke); }
+.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: var(--smoke); text-decoration: none; transition: color 0.15s; }
+.back-link:hover { color: var(--bourbon); }
+.back-link::before { content: '←'; font-size: 13px; }
 
 /* ── HERO ── */
 .hero { padding: 96px 80px 72px; max-width: 900px; border-bottom: 1px solid var(--rule); }
@@ -269,7 +272,10 @@ footer { border-top: 1px solid var(--rule); padding: 44px 80px; display: flex; j
 
 <header>
   <span class="logo">URIM</span>
-  <span class="header-tag">Research System · Install Guide</span>
+  <div style="display:flex; align-items:center; gap:28px;">
+    <a class="back-link" href="index.html">Back to Docs</a>
+    <span class="header-tag">Research System · Install Guide</span>
+  </div>
 </header>
 
 <!-- HERO -->
