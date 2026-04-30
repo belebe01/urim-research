@@ -260,107 +260,151 @@ footer { border-top: 1px solid var(--rule); padding: 44px 80px; display: flex; j
 ::-webkit-scrollbar-thumb { background: var(--bourbon-pale); border-radius: 2px; }
 
 @media (max-width: 768px) {
-  /* Prevent any horizontal overflow */
-  html, body { overflow-x: hidden; width: 100%; }
-  * { max-width: 100%; }
 
-  /* Header */
-  header { padding: 14px 18px; flex-wrap: wrap; gap: 6px; position: relative; }
+  /* BASE */
+  html, body { overflow-x: hidden; width: 100%; }
+
+  /* HEADER */
+  header { padding: 14px 16px; flex-wrap: wrap; gap: 6px; }
   .header-tag { display: none; }
   .back-link { font-size: 11px; }
 
-  /* Hero — override max-width that causes desktop sizing */
-  .hero { padding: 36px 18px 32px; max-width: 100% !important; width: 100%; }
-  .hero-eyebrow { font-size: 10px; margin-bottom: 14px; }
-  .hero-title { font-size: 38px; line-height: 0.9; margin-bottom: 18px; }
-  .hero-desc { font-size: 14px; margin-bottom: 24px; }
-  .meta-row { gap: 14px; flex-wrap: wrap; }
+  /* HERO */
+  .hero { padding: 36px 16px 32px; max-width: 100% !important; width: 100%; box-sizing: border-box; }
+  .hero-eyebrow { font-size: 10px; margin-bottom: 12px; }
+  .hero-title { font-size: 40px; line-height: 1.0; margin-bottom: 16px; }
+  .hero-desc { font-size: 16px; line-height: 1.6; margin-bottom: 24px; max-width: 100%; }
+  .meta-row { gap: 12px; flex-wrap: wrap; }
   .meta-sep { display: none; }
-  .meta-n { font-size: 26px; }
-  .meta-l { font-size: 8px; }
+  .meta-n { font-size: 28px; }
+  .meta-l { font-size: 9px; }
 
-  /* Library note */
-  .library-note { margin: 0; padding: 18px; border-left-width: 3px; }
+  /* EXPLAINER */
+  .explainer { margin: 0; padding: 20px 16px; border-left: none; border-right: none; }
+  .explainer-title { font-size: 22px; margin-bottom: 10px; }
+  .explainer-desc { font-size: 16px; line-height: 1.6; margin-bottom: 20px; max-width: 100%; }
 
-  /* Pathway section */
-  .pathway-section { padding: 32px 18px; }
-  .pathway-section-title { font-size: 26px; }
+  /* TOOL CARDS */
+  .tool-cards { grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px; }
+  .tool-card { padding: 20px 18px; width: 100%; box-sizing: border-box; }
+  .tool-card-icon { font-size: 28px; margin-bottom: 10px; }
+  .tool-card-name { font-size: 20px; margin-bottom: 8px; }
+  .tool-card-desc { font-size: 16px; line-height: 1.55; }
+
+  /* FLOW LINE */
+  .flow-line { padding: 14px 16px; }
+  .flow-line-text { font-size: 16px; line-height: 1.55; }
+
+  /* TIME OVERVIEW */
+  .time-overview { margin: 0; padding: 20px 16px; border-left-width: 3px; border-right: none; }
+  .time-overview-title { font-size: 18px; margin-bottom: 14px; }
+  .time-parts { flex-direction: column; gap: 0; }
+  .time-part { border-right: none; border-bottom: 1px solid var(--bourbon-pale); padding: 14px 0; }
+  .time-part:last-child { border-bottom: none; }
+  .time-part-name { font-size: 16px; }
+  .time-part-mins { font-size: 32px; }
+
+  /* LIBRARY NOTE */
+  .library-note { margin: 0; padding: 20px 16px; border-left-width: 3px; border-right: none; }
+  .library-note-title { font-size: 18px; margin-bottom: 8px; }
+  .library-note p { font-size: 16px; line-height: 1.6; }
+
+  /* PATHWAY CHOOSER */
+  .pathway-section { padding: 32px 16px; }
+  .pathway-section-title { font-size: 28px; line-height: 1.1; margin-bottom: 6px; }
+  .pathway-section-sub { font-size: 16px; margin-bottom: 24px; }
   .pathway-cards { grid-template-columns: 1fr; gap: 14px; }
-  .pathway-card { padding: 20px 18px; }
+  .pathway-card { padding: 22px 18px; gap: 12px; }
+  .pathway-card-title { font-size: 26px; }
+  .pathway-card-desc { font-size: 16px; line-height: 1.6; }
+  .pathway-card-for { font-size: 11px; padding-top: 12px; }
 
-  /* Kill the sidebar layout completely */
-  .main { display: block; width: 100%; }
+  /* KILL SIDEBAR */
+  .main { display: block !important; width: 100%; }
   nav { display: none !important; }
 
-  /* Content area */
-  .content { padding: 28px 18px 72px; max-width: 100% !important; width: 100%; }
+  /* CONTENT */
+  .content { padding: 28px 16px 72px; max-width: 100% !important; width: 100%; box-sizing: border-box; }
 
-  /* Part headers */
-  .part-header { margin-bottom: 24px; padding-bottom: 16px; }
-  .part-title { font-size: 30px; }
-  .part-subtitle { font-size: 13px; }
+  /* PART HEADERS */
+  .part-header { margin-bottom: 22px; padding-bottom: 16px; }
+  .part-title { font-size: 30px; line-height: 1.05; }
+  .part-reassure { font-size: 14px; padding: 12px 14px; line-height: 1.6; }
 
-  /* Step blocks */
-  .step-block { margin-bottom: 36px; }
-  .step-header { gap: 12px; padding-bottom: 12px; margin-bottom: 14px; }
-  .step-num { font-size: 36px; }
-  .step-title { font-size: 19px; }
-  .step-time { font-size: 10px; }
+  /* PATHWAY BANNER */
+  .pathway-banner { padding: 14px 16px; font-size: 15px; margin-bottom: 28px; }
 
-  /* Why notes */
-  .why-note { font-size: 12px; padding-left: 10px; }
+  /* STEPS */
+  .step { margin-bottom: 36px; }
+  .step-num { font-size: 11px; margin-bottom: 4px; }
+  .step-title { font-size: 22px; margin-bottom: 10px; }
+  .step p { font-size: 16px; line-height: 1.6; margin-bottom: 12px; }
+  .why-note { font-size: 15px; line-height: 1.6; padding-left: 12px; margin-bottom: 12px; }
 
-  /* Code blocks — scroll horizontally if needed */
-  pre { font-size: 11px !important; padding: 10px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: pre; word-break: normal; }
-  .paste-label { font-size: 9px; padding: 4px 9px; display: inline-flex; }
-  .code-wrapper { overflow-x: auto; }
+  /* SUCCESS BLOCKS */
+  .success-block { padding: 14px 16px; }
+  .success-text { font-size: 16px; line-height: 1.6; }
 
-  /* Fork block */
-  .fork-block { padding: 24px 18px; }
-  .fork-title { font-size: 24px; }
+  /* PASTE LABELS */
+  .paste-label { font-size: 10px; padding: 5px 10px; }
+
+  /* CODE BLOCKS */
+  pre { font-size: 13px; padding: 14px 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: pre; word-break: normal; }
+  pre code { font-size: 13px; }
+  .code-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+
+  /* FORK BLOCK */
+  .fork-block { padding: 24px 16px; margin-bottom: 40px; }
+  .fork-title { font-size: 26px; }
+  .fork-desc { font-size: 16px; line-height: 1.6; margin-bottom: 24px; }
   .fork-options { grid-template-columns: 1fr; gap: 12px; }
-  .fork-option { padding: 18px 16px; }
+  .fork-option { padding: 20px 16px; gap: 8px; }
+  .fork-option-title { font-size: 22px; }
+  .fork-option-desc { font-size: 16px; line-height: 1.6; }
 
-  /* Tool cards */
-  .tool-cards { grid-template-columns: 1fr; gap: 12px; }
-  .tool-card { padding: 18px 16px; }
+  /* CHECKLIST */
+  .checklist { padding: 24px 16px; margin-bottom: 40px; }
+  .checklist-title { font-size: 24px; margin-bottom: 6px; }
+  .checklist-sub { font-size: 15px; margin-bottom: 18px; }
+  .checklist-items { gap: 10px; }
+  .checklist-item { padding: 14px 14px; gap: 12px; }
+  .checklist-item-title { font-size: 16px; }
+  .checklist-item-desc { font-size: 15px; line-height: 1.55; }
 
-  /* Time estimate */
-  .time-parts { flex-direction: column; }
-  .time-part { border-right: none !important; border-bottom: 1px solid var(--bourbon-pale); padding: 12px 16px; }
-  .time-part:last-child { border-bottom: none; }
+  /* TABLES */
+  .usage-table { font-size: 13px; display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .usage-table th { font-size: 9px; padding: 8px 10px; }
+  .usage-table td { padding: 10px 10px; font-size: 14px; line-height: 1.5; }
 
-  /* Tables — allow horizontal scroll */
-  .usage-table { font-size: 11px; display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .usage-table th, .usage-table td { padding: 7px 8px; white-space: nowrap; }
+  /* SKILL STEPS */
+  .skill-step { gap: 14px; margin-bottom: 22px; }
+  .skill-step-num { font-size: 28px; width: 22px; }
+  .skill-step-title { font-size: 16px; }
+  .skill-step-desc { font-size: 16px; line-height: 1.6; }
 
-  /* Skill steps */
-  .skill-step { flex-direction: column; gap: 10px; padding: 16px 0; }
-  .skill-step-num { font-size: 28px; }
+  /* ERROR SECTION */
+  .error-prompt-section { padding: 20px 16px; margin-bottom: 24px; }
+  .error-prompt-title { font-size: 22px; margin-bottom: 10px; }
+  .error-prompt-desc { font-size: 16px; line-height: 1.6; margin-bottom: 18px; }
 
-  /* Warn and success blocks */
-  .warn-note { font-size: 12px; padding: 10px 14px; }
-  .success-block { padding: 12px 14px; }
+  /* COST ROWS */
+  .cost-row { font-size: 16px; padding: 12px 0; flex-wrap: wrap; gap: 4px; }
+  .cost-value { font-size: 22px; }
 
-  /* Error section */
-  .error-prompt-section { padding: 20px 18px; }
+  /* WARN NOTE */
+  .warn-note { font-size: 14px; padding: 12px 14px; }
 
-  /* Legend */
+  /* LEGEND */
   .legend-grid { grid-template-columns: 1fr; gap: 12px; }
 
-  /* Checklist */
-  .checklist-item { padding: 10px 12px; }
-  .check-title { font-size: 13px; }
-  .check-desc { font-size: 12px; }
-
-  /* Section gaps */
+  /* SECTION GAPS */
   .section-gap { margin-bottom: 40px; }
 
-  /* Footer */
-  footer { padding: 24px 18px; flex-direction: column; gap: 12px; }
-  .footer-right { text-align: left; }
+  /* FOOTER */
+  footer { padding: 24px 16px; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .footer-links { gap: 20px; flex-wrap: wrap; }
 
-  /* Copy buttons */
+  /* COPY BUTTONS */
   .copy-btn { font-size: 10px; padding: 3px 8px; top: 6px; right: 6px; }
 }
 
