@@ -181,10 +181,10 @@ nav { border-right: 1px solid var(--rule); padding: 52px 36px; position: sticky;
 
 /* ── CODE BLOCKS ── */
 pre { background: var(--code-bg); border: 1px solid var(--code-border); border-left: 3px solid var(--bourbon-pale); padding: 18px 22px; overflow-x: auto; margin: 14px 0; }
-pre code { font-family: 'Courier New', monospace; font-size: 13px; color: var(--leather); line-height: 1.8; }
+pre code { font-family: 'Courier New', monospace; font-size: 13px; color: #1a1a1a; line-height: 1.8; font-weight: 500; }
 .approve-note { font-size: 12px; color: var(--smoke); margin-top: 6px; font-style: italic; display: flex; align-items: center; gap: 6px; }
 .approve-note::before { content: '↳'; color: var(--bourbon); }
-code:not(pre code) { font-family: 'Courier New', monospace; font-size: 12px; background: var(--code-bg); border: 1px solid var(--code-border); padding: 2px 5px; color: var(--bourbon-deep); }
+code:not(pre code) { font-family: 'Courier New', monospace; font-size: 12px; background: var(--code-bg); border: 1px solid var(--code-border); padding: 2px 5px; color: #1a1a1a; font-weight: 600; }
 
 /* ── FORK BLOCK ── */
 .fork-block { border: 1px solid var(--rule); padding: 40px; margin: 0 0 72px; text-align: center; background: var(--off-white); }
@@ -216,7 +216,7 @@ code:not(pre code) { font-family: 'Courier New', monospace; font-size: 12px; bac
 .checklist-content { flex: 1; }
 .checklist-item-title { font-size: 14px; font-weight: 500; color: var(--leather); margin-bottom: 4px; }
 .checklist-item-desc { font-size: 13px; color: var(--leather-soft); line-height: 1.6; }
-.checklist-cmd { font-family: 'Courier New', monospace; font-size: 12px; color: var(--bourbon-deep); background: var(--code-bg); border: 1px solid var(--code-border); padding: 2px 6px; margin-top: 4px; display: inline-block; }
+.checklist-cmd { font-family: 'Courier New', monospace; font-size: 12px; color: #1a1a1a; font-weight: 600; background: var(--code-bg); border: 1px solid var(--code-border); padding: 2px 6px; margin-top: 4px; display: inline-block; }
 
 /* ── USAGE TABLE ── */
 .usage-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
@@ -349,9 +349,10 @@ footer { border-top: 1px solid var(--rule); padding: 44px 80px; display: flex; j
   .paste-label { font-size: 10px; padding: 5px 10px; }
 
   /* CODE BLOCKS */
-  pre { font-size: 13px; padding: 14px 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: pre; word-break: normal; }
-  pre code { font-size: 13px; }
+  pre { font-size: 13px; padding: 14px 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: pre; word-break: normal; background: #f0e8dc; border-left-color: var(--bourbon); }
+  pre code { font-size: 13px; color: #000000; font-weight: 600; }
   .code-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+  code:not(pre code) { color: #000000; font-weight: 600; background: #e8ddd0; }
 
   /* FORK BLOCK */
   .fork-block { padding: 24px 16px; margin-bottom: 40px; }
